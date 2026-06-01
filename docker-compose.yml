@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  ddns:
+    # ============================================================
+    # DDNS-Python — DNSPod 动态域名解析自动更新
+    # ============================================================
+
+    container_name: ddns-python:1.0.0
+
+    # 挂载配置文件（只读）
+    volumes:
+      - ./config.ini:/app/config.ini:ro
+      - ./logs:/app/logs
+
+    # 检测间隔（秒），默认 300 即 5 分钟
+    environment:
+      - INTERVAL=300
+
+    # 容器始终自动重启
+    restart: unless-stopped
