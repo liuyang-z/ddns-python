@@ -35,26 +35,26 @@ help:
 ## 构建 Docker 镜像
 .PHONY: build
 build:
-	docker build -t $(IMAGE_NAME):$(IMAGE_TAG) .
+	docker build -f docker/Dockerfile -t $(IMAGE_NAME):$(IMAGE_TAG) .
 
 ## 运行容器（挂载本地 config.ini，按需修改）
 .PHONY: run
 run:
 	docker run -ti --rm \
 		--name ddns-python \
-		-v "$(CURDIR)/config.ini:/app/config.ini:ro" \
+		-v "$(CURDIR)/config/config.ini:/app/config.ini:ro" \
 		-e INTERVAL=10 \
 		$(IMAGE_NAME):$(IMAGE_TAG)
 
 ## 使用 docker compose 启动
 .PHONY: compose-up
 compose-up:
-	docker compose up -d
+	docker compose -f docker/docker-compose.yml up -d
 
 ## 使用 docker compose 停止并清理
 .PHONY: compose-down
 compose-down:
-	docker compose down
+	docker compose -f docker/docker-compose.yml down
 
 ## 导出镜像为 tar 文件
 .PHONY: export

@@ -10,11 +10,28 @@ import requests
 import re
 import configparser
 
+def _find_config():
+    """查找 config.ini，优先级：环境变量 > ../config/ > /app/config.ini > ./config.ini"""
+    search_paths = [
+        os.environ.get('DDNS_CONFIG', ''),
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'config', 'config.ini'),
+        '/app/config.ini',
+        os.path.join(os.getcwd(), 'config.ini'),
+    ]
+    for p in search_paths:
+        if p and os.path.exists(p):
+            return p
+    raise FileNotFoundError(
+        "config.ini not found. Searched paths:\n  " +
+        "\n  ".join(filter(None, search_paths))
+    )
+
+
 class DDNS(object):
 
     def __init__(self):
         conf = configparser.ConfigParser()
-        conf.read(os.path.dirname(os.path.abspath(__file__)) + '/config.ini')
+        conf.read(_find_config())
 
         self._domain    = conf.get('Basic', 'Domain')
         self._subdomain = conf.get('Basic', 'SubDomain')
@@ -115,7 +132,13 @@ class DDNS(object):
 
 class Log(object):
     def __init__(self):
-        self.rootPath = os.path.dirname(os.path.abspath(__file__))
+        # 日志目录：Docker 中用 /app/logs，本地开发用项目根目录下的 logs/
+        if os.path.isdir('/app/logs'):
+            self.rootPath = '/app'
+        else:
+            self.rootPath = os.path.join(
+                os.path.dirname(os.path.abspath(__file__)), '..'
+            )
 
     def info(self, msg):
         self.checkDir()

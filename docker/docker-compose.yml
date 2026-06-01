@@ -8,10 +8,10 @@ services:
 
     container_name: ddns-python:1.0.0
 
-    # 挂载配置文件（只读）
+    # 挂载配置文件（只读），路径相对于项目根目录
     volumes:
-      - ./config.ini:/app/config.ini:ro
-      - ./logs:/app/logs
+      - ../config/config.ini:/app/config.ini:ro
+      - ../logs:/app/logs
 
     # 检测间隔（秒），默认 300 即 5 分钟
     environment:

@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Git
+.git/
+.gitignore
+
+# Docs
+README.md
+LICENSE
+
+# Logs
+logs/
+
+# Build tools
+Makefile
+docker/docker-compose.yml
+
+# IDE
+.vscode/
+.idea/
+
+# Export
+*.tar
